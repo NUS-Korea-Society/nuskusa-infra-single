@@ -27,8 +27,6 @@ services:
      container_name: express
      ports: 
        - "3000:3000"
-     volumes: 
-       - "/home/ubuntu/temp.json:/home/ubuntu/temp.json"
      restart: always
  
    nginx:
