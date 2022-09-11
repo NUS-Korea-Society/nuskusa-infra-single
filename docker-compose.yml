@@ -21,3 +21,23 @@ services:
       - ADMINER_DEFAULT_SERVER=mysql
     ports:
       - 8080:8080
+
+  express: 
+     build: ./express/
+     container_name: express
+     ports: 
+       - "3000:3000"
+     volumes: 
+       - "/home/ubuntu/temp.json:/home/ubuntu/temp.json"
+     restart: always
+ 
+   nginx:
+     build: ./nginx/
+     stdin_open: true # docker run -i
+     container_name: nginx
+     depends_on: 
+       - express
+     ports: 
+       - "80:80"
+       - "443:443"
+     restart: always
