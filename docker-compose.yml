@@ -30,7 +30,7 @@ services:
     ports: 
       - "3000:3000"
     depends_on:
-      - adminer
+      - mysql
     restart: always
     environment:
       - PKR_VAR_MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
