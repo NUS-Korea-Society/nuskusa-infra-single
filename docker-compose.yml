@@ -21,6 +21,8 @@ services:
       - ADMINER_DEFAULT_SERVER=mysql
     ports:
       - 8080:8080
+    depends_on:
+      - mysql
 
   express: 
     build: ./express/
@@ -28,13 +30,15 @@ services:
     ports: 
       - "3000:3000"
     depends_on:
-      - mysql
+      - adminer
     restart: always
     environment:
       - PKR_VAR_MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - PKR_VAR_MYSQL_USER=$MYSQL_USER
       - PKR_VAR_MYSQL_PASSWORD=$MYSQL_PASSWORD
       - PKR_VAR_MYSQL_DATABASE=$MYSQL_DATABASE
+    stdin_open: true
+    tty: true
 
   nginx:
     build: ./nginx/
