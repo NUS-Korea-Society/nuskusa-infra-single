@@ -7,7 +7,7 @@ services:
     restart: always
     container_name: mysql
     volumes: 
-      - "/home/ubuntu/nuskusa-infra/mysql/volume:/var/lib/mysql"
+      - "/mysql/volume:/var/lib/mysql"
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_USER=$MYSQL_USER
@@ -50,3 +50,21 @@ services:
       - "80:80"
       - "443:443"
     restart: always
+
+  jenkins:
+    build: ./jenkins/
+    container_name: jenkins
+    volumes:
+      - "/jenkins:/var/lib/jenkins"
+      - "/usr/bin/docker:/usr/bin/docker"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    ports:
+      - "8000:8080"
+    tty: true
+    user: root
+    stdin_open: true
+    environment:
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_PASSWORD=$MYSQL_PASSWORD
