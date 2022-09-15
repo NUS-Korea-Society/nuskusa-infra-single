@@ -30,5 +30,4 @@ RUN /usr/sbin/usermod -aG docker jenkins
 RUN /usr/sbin/usermod -aG sudo jenkins
 RUN echo jenkins  ALL = NOPASSWD: ALL >> /etc/sudoers
 
-RUN chown -R 1000:1000 /var/jenkins_home
 ENTRYPOINT ./init.sh
