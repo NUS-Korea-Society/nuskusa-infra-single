@@ -15,31 +15,24 @@ pipeline {
         
         stage("Pull") {
             steps {
-                dir("nuskusa-backend") {
-                    git url: "${BackendGitUrl}", branch: "main", poll: true, changelog: true
-                }
                 dir("nuskusa-infra-single") {
                     git url: "${InfraGitUrl}", branch: "main", poll: true, changelog: true
                 }
             }
         }
         
-        stage("Move single-instance specific files") {
-            steps{
-                sh 'rm nuskusa-backend/docker-compose.yml'
-                sh 'rm -r nuskusa-backend/codedeploy'
-                sh 'mv nuskusa-infra-single/docker-compose.yml nuskusa-backend/'
-                sh 'mv nuskusa-infra-single/mysql nuskusa-backend/'
-                sh 'mv nuskusa-infra-single/codedeploy nuskusa-backend/'
-            }
-        }
-        
         stage("Deploy") {
             steps {
-                dir("nuskusa-backend") {
-                    sh 'sudo -E docker compose down'
-                    sh 'sudo -E docker compose up -d --build'
+                dir("nuskusa-infra-single") {
+                    sh 'sudo -E docker compose -f docker-compose.yml down'
+                    sh 'sudo -E docker compose -f docker-compose.yml up -d --build'
                 }
+            }
+        }
+
+        stage("Finish") {
+            steps {
+                sh 'docker images -qf dangling=true | xargs -I{} docker rmi {}'
             }
         }
     }
