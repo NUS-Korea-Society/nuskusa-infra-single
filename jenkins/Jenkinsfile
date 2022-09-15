@@ -24,8 +24,8 @@ pipeline {
         stage("Deploy") {
             steps {
                 dir("nuskusa-infra-single") {
-                    sh 'sudo -E docker compose -f docker-compose.yml down'
-                    sh 'sudo -E docker compose -f docker-compose.yml up -d --build'
+                    sh 'sudo -E docker compose down'
+                    sh 'sudo -E docker compose up -d --build'
                 }
             }
         }
