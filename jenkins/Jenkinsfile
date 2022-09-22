@@ -12,11 +12,11 @@ pipeline {
             }
         }
         
-        stage("Pull") {
-            steps {
-                //sh 'git clone ${InfraGitUrl}'
-            }
-        }
+        // stage("Pull") {
+        //     steps {
+        //         //sh 'git clone ${InfraGitUrl}'
+        //     }
+        // }
         
         stage("Deploy") {
             steps {
