@@ -2,7 +2,6 @@ pipeline {
     agent any
     
     environment {
-        BackendGitUrl = "https://github.com/NUS-Korea-Society/nuskusa-backend"
         InfraGitUrl = "https://github.com/NUS-Korea-Society/nuskusa-infra-single.git"
     }
     
@@ -15,7 +14,7 @@ pipeline {
         
         stage("Pull") {
             steps {
-                git url: "${InfraGitUrl}", branch: "main", poll: true, changelog: true
+                sh 'git clone ${InfraGitUrl}'
             }
         }
         
