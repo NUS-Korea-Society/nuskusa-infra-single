@@ -15,9 +15,7 @@ pipeline {
         
         stage("Pull") {
             steps {
-                dir("nuskusa-infra-single") {
-                    git url: "${InfraGitUrl}", branch: "main", poll: true, changelog: true
-                }
+                git url: "${InfraGitUrl}", branch: "main", poll: true, changelog: true
             }
         }
         
