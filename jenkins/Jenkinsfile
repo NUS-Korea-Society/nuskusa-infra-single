@@ -2,7 +2,6 @@ pipeline {
     agent any
     
     environment {
-        FEGitUrl = "https://github.com/NUS-Korea-Society/nuskusa.git"
         InfraGitUrl = "https://github.com/NUS-Korea-Society/nuskusa-infra-single.git"
     }
 
@@ -20,24 +19,11 @@ pipeline {
         stage("Pull") {
             steps {
                 sh 'git clone ${InfraGitUrl}'
-                sh 'git clone ${FEGitUrl}'
-            }
-        }
-
-        stage("React Build") {
-            steps {
-                dir('nuskusa') {
-                    nodejs(nodeJSInstallationName: 'node') {
-                       sh 'npm install'
-                        sh 'CI=false node --max_old_space_size=512 node_modules/.bin/react-scripts build'
-                    }
-                }
             }
         }
         
         stage("Deploy") {
             steps {
-                sh 'sudo mv -f nuskusa/build nuskusa-infra-single/nginx/build'
                 dir("nuskusa-infra-single") {
                     sh 'sudo -E docker compose down'
                     sh 'sudo -E docker compose up -d --build'
