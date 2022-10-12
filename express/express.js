@@ -31,8 +31,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, //true
-        _expires: 1000 * 60 * 60 * 3, //(3 Hours),
+        secure: false, // true
+        _expires: 1000 * 60 * 60 * 3, // (3 Hours),
         httpOnly: false,
     }
 }))

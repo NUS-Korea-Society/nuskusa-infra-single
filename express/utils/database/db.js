@@ -21,7 +21,7 @@ for (let i = 0; i < ec2MetaData.length; i++) {
 */
 const dbService = new Sequelize(process.env.PKR_VAR_MYSQL_DATABASE, process.env.PKR_VAR_MYSQL_USER, process.env.PKR_VAR_MYSQL_PASSWORD, {
     dialect: 'mysql',
-    host: "mysql",
+    host: "13.215.194.240", //"mysql",
     pool: {
         max: 5,
         min: 0,
