@@ -478,16 +478,28 @@ router.post("/findPassword/", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Information mismatch")
         return;
     }
-    const tempPassword = generateTempPassword();
-    user.update({
-        password: crypto.createHash('sha512').update(tempPassword).digest("base64"),
+    const salt = await Salt.findOne({
+        where: {
+            user: user.id
+        }
     })
-    const successful = await sendPasswordResetEmail(req.body.email, tempPassword)
-    if (!successful) {
-        res.status(HttpStatusCode.EXPECTATION_FAILED).send("Temporary Password Email Sending Failed");
-    } else {
-        res.status(HttpStatusCode.OK).send("Email with temporary password successfully sent.");
-    }
+    const tempPassword = generateTempPassword();
+    crypto.pbkdf2(tempPassword, salt.salt, 1250, 64, 'sha512', async (err, hashedPassword) => {
+        if (err) {
+            console.log(err);
+            res.status(HttpStatusCode.EXPECTATION_FAILED).send();
+            return;
+        }
+        user.update({
+            password: hashedPassword,
+        })
+        const successful = await sendPasswordResetEmail(req.body.email, tempPassword)
+        if (!successful) {
+            res.status(HttpStatusCode.EXPECTATION_FAILED).send("Temporary Password Email Sending Failed");
+        } else {
+            res.status(HttpStatusCode.OK).send("Email with temporary password successfully sent.");
+        }
+    })
 })
 
 router.get("/removeAccount", async (req, res) => {
