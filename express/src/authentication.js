@@ -484,7 +484,8 @@ router.post("/findPassword/", async (req, res) => {
         }
     })
     const tempPassword = generateTempPassword();
-    crypto.pbkdf2(tempPassword, salt.salt, 1250, 64, 'sha512', async (err, hashedPassword) => {
+    const hashedTempPassword = crypto.SHA512(tempPassword).toString();
+    crypto.pbkdf2(hashedTempPassword, salt.salt, 1250, 64, 'sha512', async (err, hashedPassword) => {
         if (err) {
             console.log(err);
             res.status(HttpStatusCode.EXPECTATION_FAILED).send();
