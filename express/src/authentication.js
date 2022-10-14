@@ -453,6 +453,10 @@ router.post("/declineUser", async (req, res) => {
 
 router.get("/emailVerify/:userId", async (req, res) => {
     const user = await User.findByPk(req.params.userId)
+    if (user == null) {
+        res.status(HttpStatusCode.NOT_FOUND).send("User Not Found")
+        return
+    }
     const updated = await user.update({
         emailVerified: true,
     })
@@ -460,12 +464,20 @@ router.get("/emailVerify/:userId", async (req, res) => {
     return;
 })
 
-router.get("/findPassword/:email", async (req, res) => {
+router.post("/findPassword/", async (req, res) => {
     const user = await User.findOne({
         where: {
-            email: req.params.email,
+            email: req.body.email,
         }
     })
+    if (user == null) {
+        res.status(HttpStatusCode.NOT_FOUND).send("No such user")
+        return;
+    }
+    if (user.name != req.body.name && user.yearOfBirth != req.body.yearOfBirth) {
+        res.status(HttpStatusCode.UNAUTHORIZED).send("Information mismatch")
+        return;
+    }
     const tempPassword = generateTempPassword();
     user.update({
         password: crypto.createHash('sha512').update(tempPassword).digest("base64"),
@@ -511,7 +523,7 @@ function sendPasswordResetEmail(email, newTempPassword) {
             from: "NUS 한인회 <nuskusa@gmail.com>",//process.env.EMAIL_SENDER,
             to: email,
             subject: "NUS 한인회 웹사이트 비밀번호 재설정 안내",
-            text: `안녕하세요, NUS 한인회입니다.\n\n 비밀번호 재설정을 요청하셨습니다. \n\n 귀하의 임시 비밀번호는 아래와 같습니다. 확인 후 로그인해주시고, 비밀번호를 즉시 변경해주시기 바랍니다. \n\n 만약 해당 요청을 본인이 하신 것이 아니라면 즉시 한인회 측에 연락 부탁드립니다. \n\n 임시 비밀번호: ${newTempPassword} \n\n 감사합니다. \n\n NUS 한인회 올림.`,
+            text: `안녕하세요, NUS 한인회입니다.\n\n 비밀번호 재설정을 요청하셨습니다. \n\n 귀하의 임시 비밀번호는 아래와 같습니다. 확인 후 로그인해주시고, 비밀번호를 즉시 변경해주시기 바랍니다. \n\n 만약 본인이 요청하신 것이 아니라면 즉시 NUS한인회 (nuskusa@gmail.com / 인스타 nus_ks) 에 연락 부탁드립니다. \n\n 임시 비밀번호: ${newTempPassword} \n\n 감사합니다. \n\n NUS 한인회 올림.`,
         }
 
         transporter.sendMail(options, (error, info) => {

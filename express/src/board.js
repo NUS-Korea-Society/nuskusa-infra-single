@@ -102,6 +102,21 @@ router.get("/getPosts/:boardId", async (req, res) => {
     return;
 })
 
+router.get("/getAnnouncements", (req, res) => {
+    const announcementBoard = await Board.findOne({
+        where: {
+            boardId: "announcement"
+        },
+        attributes: ['id']
+    })
+    const announcements = await Post.findAll({
+        where: {
+            board: announcementBoard.id
+        },
+        raw: true,
+    })
+    res.status(HttpStatusCode.OK).send(announcements)
+})
 
 export default router;
 export { getAccessibleBoardIds, getAccessibleBoards, getPermissions }
