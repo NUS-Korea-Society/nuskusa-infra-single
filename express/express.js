@@ -51,7 +51,7 @@ app.get('/api/checkDb', (req, res) => {
     res.send(dbIP)
 })
 
-app.get("/api/contactus", (req, res) => {
+app.post("/api/contactus", (req, res) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",//process.env.EMAIL_SERVICE,
         auth: {
