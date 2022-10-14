@@ -100,7 +100,7 @@ router.post("/signin",
             res.status(HttpStatusCode.NOT_IMPLEMENTED).send("Need firebase password update")
         }
         else {
-            next();
+            next();     
         }
     },
     passport.authenticate('local', { failureRedirect: "/signin", failureMessage: true }),
@@ -527,6 +527,8 @@ function sendPasswordResetEmail(email, newTempPassword) {
         }
 
         transporter.sendMail(options, (error, info) => {
+            console.log(error)
+            console.log(info)
             if (error) {
                 resolve(false);
             }
