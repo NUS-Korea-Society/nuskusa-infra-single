@@ -482,7 +482,7 @@ router.post("/findPassword/", async (req, res) => {
     user.update({
         password: crypto.createHash('sha512').update(tempPassword).digest("base64"),
     })
-    const successful = await sendPasswordResetEmail(req.params.email, tempPassword)
+    const successful = await sendPasswordResetEmail(req.body.email, tempPassword)
     if (!successful) {
         res.status(HttpStatusCode.EXPECTATION_FAILED).send("Temporary Password Email Sending Failed");
     } else {
