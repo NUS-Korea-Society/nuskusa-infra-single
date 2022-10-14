@@ -102,7 +102,7 @@ router.get("/getPosts/:boardId", async (req, res) => {
     return;
 })
 
-router.get("/getAnnouncements", (req, res) => {
+router.get("/getAnnouncements", async (req, res) => {
     const announcementBoard = await Board.findOne({
         where: {
             boardId: "announcement"
