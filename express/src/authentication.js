@@ -490,8 +490,8 @@ router.post("/findPassword/", async (req, res) => {
             res.status(HttpStatusCode.EXPECTATION_FAILED).send();
             return;
         }
-        user.update({
-            password: hashedPassword.toString('base64'),
+        const updatedUser = await user.update({
+            password: hashedPassword.toString('base64')
         })
         const successful = await sendPasswordResetEmail(req.body.email, tempPassword)
         if (!successful) {
