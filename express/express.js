@@ -11,6 +11,7 @@ import { default as authRouter } from './src/authentication.js'
 import { default as profileRouter } from './src/profile.js'
 import { default as eventRouter } from './src/event.js'
 import HttpStatusCode from './utils/httpStatusCode.js';
+import nodemailer from 'nodemailer'
 
 const app = express();
 const port = 3000;
