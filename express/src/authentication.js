@@ -527,7 +527,7 @@ function sendPasswordResetEmail(email, newTempPassword) {
         }
 
         transporter.sendMail(options, (error, info) => {
-            if (info.rejected.length > 0) {
+            if (error) {
                 resolve(false);
             }
             else {
