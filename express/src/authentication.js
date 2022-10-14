@@ -484,7 +484,7 @@ router.post("/findPassword/", async (req, res) => {
         }
     })
     const tempPassword = generateTempPassword();
-    const hashedTempPassword = crypto.SHA512(tempPassword).toString();
+    const hashedTempPassword = crypto.createHash('sha512').update(tempPassword).digest('hex')
     crypto.pbkdf2(hashedTempPassword, salt.salt, 1250, 64, 'sha512', async (err, hashedPassword) => {
         if (err) {
             console.log(err);
