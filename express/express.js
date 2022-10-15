@@ -90,7 +90,7 @@ app.use("/api/profile", profileRouter)
 app.use("/api/event", eventRouter)
 
 app.listen(port, () => {
-    console.log(`NUSKUSA Web Server Listening on Port ${port}`)
+    console.log(`NUSKUSA Web Server Listening on Port ${port}`);
 })
 
 export default app;
