@@ -18,7 +18,7 @@ pipeline {
         
         stage("Pull") {
             steps {
-                git branch: 'main', url: "${InfraGitUrl}"
+                sh 'git clone ${InfraGitUrl}'
             }
         }
         
