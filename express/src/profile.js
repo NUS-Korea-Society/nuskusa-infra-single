@@ -168,14 +168,18 @@ router.get("/searchProfile", async (req, res) => {
     if (name) {
         users = await User.findAll({
             where: {
-                name: name,
+                name: {
+                    [Op.like]: `%${name}%`
+                },
             }
         })
     }
     else if (yearOfBirth) {
         users = await User.findAll({
             where: {
-                yearOfBirth: yearOfBirth
+                yearOfBirth: {
+                    [Op.like]: `%${yearOfBirth}%`
+                }
             }
         })
         
@@ -183,14 +187,18 @@ router.get("/searchProfile", async (req, res) => {
     else if (enrolledYear) {
         users = await User.findAll({
             where: {
-                enrolledYear: enrolledYear
+                enrolledYear: {
+                    [Op.like]: `%${enrolledYear}%`
+                }
             }
         })
     } 
     else if (role) {
         const roleObject = await Role.findOne({
             where: {
-                name: role,
+                name: {
+                    [Op.like]: `%${role}%`
+                }
             }
         })
         if (! roleObject) {
@@ -210,7 +218,9 @@ router.get("/searchProfile", async (req, res) => {
     else if (major) {
         users = await User.findAll({
             where: {
-                major: major,
+                major: {
+                    [Op.like]: `%${major}%`,
+                }
             }
         })
     }
