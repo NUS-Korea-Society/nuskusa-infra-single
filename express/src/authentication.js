@@ -527,7 +527,7 @@ function sendPasswordResetEmail(email, newTempPassword) {
             service: "gmail",//process.env.EMAIL_SERVICE,
             auth: {
                 user: "nuskusa@gmail.com",//process.env.EMAIL_USER,
-                pass: "eggajadehubctpeh", //process.env.EMAIL_PASSWORD,
+                pass: process.env.EMAIL_PASSWORD,
             },
             from: "nuskusa@outlook.com"
         })
@@ -558,7 +558,7 @@ function sendVerificationEmail(email, userId) {
             service: "gmail",//process.env.EMAIL_SERVICE,
             auth: {
                 user: "nuskusa@gmail.com",//process.env.EMAIL_USER,
-                pass: "eggajadehubctpeh", //process.env.EMAIL_PASSWORD,
+                pass: process.env.EMAIL_PASSWORD,
             },
             from: "nuskusa@gmail.com"
         })
@@ -590,7 +590,7 @@ async function emailAlertDenial(email, denialMessage) {
         service: "gmail",//process.env.EMAIL_SERVICE,
         auth: {
             user: "nuskusa@gmail.com",//process.env.EMAIL_USER,
-            pass: "eggajadehubctpeh", //process.env.EMAIL_PASSWORD,
+            pass: process.env.EMAIL_PASSWORD,
         },
         from: "nuskusa@gmail.com"
     })
@@ -617,7 +617,7 @@ async function emailAlertVerification(email) {
         service: "gmail",//process.env.EMAIL_SERVICE,
         auth: {
             user: "nuskusa@gmail.com",//process.env.EMAIL_USER,
-            pass: "eggajadehubctpeh", //process.env.EMAIL_PASSWORD,
+            pass: process.env.EMAIL_PASSWORD,
         },
         from: "nuskusa@gmail.com"
     })

@@ -56,8 +56,8 @@ app.post("/api/contactus", (req, res) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",//process.env.EMAIL_SERVICE,
         auth: {
-            user: "nuskusa@gmail.com",//process.env.EMAIL_USER,
-            pass: "eggajadehubctpeh", //process.env.EMAIL_PASSWORD,
+            user: "nuskusa@gmail.com",
+            pass: process.env.EMAIL_PASSWORD,
         },
         from: "nuskusa@outlook.com"
     })
