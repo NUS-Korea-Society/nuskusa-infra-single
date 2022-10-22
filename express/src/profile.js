@@ -76,12 +76,22 @@ router.post("/editProfile/:prevEmail", async (req, res) => {
         updates.password = pwDetail.hashPassword
     }
     if (newProfile.email) {
+        const prevUser = await User.findOne({
+            where: {
+                email: newProfile.email
+            }
+        })
+        if (prevUser != null) {
+            res.status(HttpStatusCode.CONFLICT).send()
+            return
+        }
         if (user.email !== newProfile.email) {
             if (await sendVerificationEmail(newProfile.email, user.id)) {
                 updates.email = newProfile.email
             }
             else {
                 res.status(HttpStatusCode.BAD_REQUEST).send()
+                return
             }
         }
     }
