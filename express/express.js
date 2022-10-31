@@ -10,6 +10,7 @@ import { default as boardRouter } from './src/board.js'
 import { default as authRouter } from './src/authentication.js'
 import { default as profileRouter } from './src/profile.js'
 import { default as eventRouter } from './src/event.js'
+import { checkBodyNull } from './utils/util.js'
 import HttpStatusCode from './utils/httpStatusCode.js';
 import nodemailer from 'nodemailer'
 
@@ -61,6 +62,11 @@ app.post("/api/contactus", (req, res) => {
         },
         from: "nuskusa@outlook.com"
     })
+    
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("Body is not attached")
+        return;
+    }
 
     const options = {
         from: "NUS 한인회 <nuskusa@gmail.com>",//process.env.EMAIL_SENDER,

@@ -1,13 +1,8 @@
-import express, { raw } from 'express'
+import express from 'express'
 import HttpStatusCode from '../utils/httpStatusCode.js';
-import { User, Salt, Notification, Role, Event, Post, Board, EventRegistration } from '../utils/database/models.js'
-import { Op } from 'sequelize'
-import { isNotLoggedIn, createSalt, sendVerificationEmail } from './authentication.js';
-import {
-    collectCommentNotifications,
-    collectUpvoteNotifications
-} from "./notification.js"
-import crypto from 'crypto';
+import { User, Role, Event, Post, Board, EventRegistration } from '../utils/database/models.js'
+import { isNotLoggedIn } from './authentication.js';
+import { checkBodyNull } from '../utils/util.js'
 
 const router = express.Router()
 
@@ -16,6 +11,11 @@ router.post("/addEvent", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not logged in")
         return
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const currentRole = await Role.findOne({
         where: {
             id: req.user.role
@@ -32,7 +32,7 @@ router.post("/addEvent", async (req, res) => {
             boardId: 'announcement'
         }
     })
-    
+
     const newPost = await Post.create({
         title: req.body.title,
         content: "temp",
@@ -64,13 +64,18 @@ router.post("/registerEvent", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not logged in")
         return
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const event = await Event.findOne({
         where: {
             post: req.body.post,
         }
     })
 
-    if (! event.canApplyMultiple) {
+    if (!event.canApplyMultiple) {
         const prevRegistration = await EventRegistration.findAll({
             where: {
                 user: req.user.id
@@ -107,7 +112,7 @@ router.get('/getEvents', async (req, res) => {
 
     const events = await Event.findAll({
         attributes: ['title', 'id']
-    });    
+    });
     res.status(HttpStatusCode.OK).send(events);
 })
 

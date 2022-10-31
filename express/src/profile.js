@@ -8,11 +8,12 @@ import {
     collectUpvoteNotifications
 } from "./notification.js"
 import crypto from 'crypto';
+import { checkBodyNull } from '../utils/util.js'
 
 const router = express.Router()
 
 router.get("/getProfile", async (req, res) => {
-    if (! req.user) {
+    if (!req.user) {
         res.status(HttpStatusCode.BAD_REQUEST).send();
         return;
     }
@@ -45,11 +46,16 @@ router.post("/editProfile/:prevEmail", async (req, res) => {
         res.send("Not Logged In");
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     if (req.params.prevEmail !== req.user.email) {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not the user trying to modify profile")
         return;
     }
-    
+
     const newProfile = req.body;
     let user = await User.findByPk(req.user.id)
     const updates = {};
@@ -121,6 +127,10 @@ router.delete("/dismissNotification/:notificationId", async (req, res) => {
     }
 
     const notification = await Notification.findByPk(req.params.notificationId);
+    if (notification == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No notification with given ID Found")
+        return;
+    }
     if (notification.notificationTo != req.user.id) {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Notification does not belongs to the requested user")
         return;
@@ -192,7 +202,7 @@ router.get("/searchProfile", async (req, res) => {
                 }
             }
         })
-        
+
     }
     else if (enrolledYear) {
         users = await User.findAll({
@@ -202,7 +212,7 @@ router.get("/searchProfile", async (req, res) => {
                 }
             }
         })
-    } 
+    }
     else if (role) {
         const roleObject = await Role.findOne({
             where: {
@@ -211,7 +221,7 @@ router.get("/searchProfile", async (req, res) => {
                 }
             }
         })
-        if (! roleObject) {
+        if (!roleObject) {
             res.status(502).send();
             return;
         }

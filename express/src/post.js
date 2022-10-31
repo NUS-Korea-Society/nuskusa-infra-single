@@ -10,6 +10,7 @@ import {
     notifyUpvoteOnComment,
     notifyUpvoteOnPost,
 } from "./notification.js"
+import { checkBodyNull } from '../utils/util.js'
 
 const router = express.Router();
 
@@ -350,6 +351,11 @@ router.post("/addComment/:postId", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const commentData = req.body;
     const newComment = await Comment.create({
         content: commentData.content,
@@ -371,7 +377,16 @@ router.post("/editComment/:commentId", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const comment = await Comment.findByPk(req.params.commentId)
+    if (comment == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No comment with given ID Found")
+        return;
+    }
     const role = await Role.findByPk(req.user.role);
     if (comment.author !== req.user.id && role.name !== "Admin") {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not the author. Only author can edit.")
@@ -390,6 +405,10 @@ router.delete("/deleteComment/:commentId", async (req, res) => {
         return;
     }
     const comment = await Comment.findByPk(req.params.commentId);
+    if (comment == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No comment with given ID Found")
+        return;
+    }
     const role = await Role.findByPk(req.user.role);
     if (comment.author !== req.user.id && role.name !== "Admin") {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not the author. Only author can edit.")
@@ -404,12 +423,21 @@ router.post("/addPost/:boardId", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const postData = req.body;
     const board = await Board.findOne({
         where: {
             boardId: req.params.boardId,
         }
     })
+    if (board == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No board with given ID Found")
+        return;
+    }
     const newPost = await Post.create({
         title: postData.title,
         content: postData.content,
@@ -429,9 +457,18 @@ router.post("/editPost/:postId", async (req, res) => {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const newPostData = req.body;
     const post = await Post.findByPk(req.params.postId)
     const role = await Role.findByPk(req.user.role);
+    if (post == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No such post with given ID found")
+        return;
+    }
     if (post.author !== req.user.id && role.name !== "Admin") {
         res.status(HttpStatusCode.UUserNAUTHORIZED).send("Not the author. Only author can edit")
         return;
@@ -455,6 +492,10 @@ router.delete("/deletePost/:postId", async (req, res) => {
     }
 
     const post = await Post.findByPk(req.params.postId)
+    if (post == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No post with given ID Found");
+        return;
+    }
     const role = await Role.findByPk(req.user.role);
     if (post.author !== req.user.id && role.name !== "Admin") {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not the author. Only author can edit")
