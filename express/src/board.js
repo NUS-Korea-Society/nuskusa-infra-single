@@ -64,7 +64,11 @@ router.get("/getBoard/:boardId", async (req, res) => {
             boardId: req.params.boardId,
         }
     })
-    res.status(200);
+    if (board == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No board with given ID Found")
+        return;
+    }
+    res.status(HttpStatusCode.OK);
     res.send(board);
     return;
 })
@@ -79,6 +83,10 @@ router.get("/getPosts/:boardId", async (req, res) => {
             boardId: req.params.boardId,
         }
     })
+    if (board == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No board with given ID Found")
+        return
+    }
     const posts = await Post.findAll({
         where: {
             board: board.id,

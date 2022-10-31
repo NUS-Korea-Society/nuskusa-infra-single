@@ -8,6 +8,7 @@ import HttpStatusCode from '../utils/httpStatusCode.js';
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import { checkBodyNull } from '../utils/util.js'
 
 const router = express.Router();
 dotenv.config();
@@ -87,6 +88,11 @@ function createSalt() {
 
 router.post("/signin",
     async (req, res, next) => {
+        if (checkBodyNull(req)) {
+            res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+            return;
+        }
+
         const user = await User.findOne({
             where: {
                 email: req.body.email,
@@ -100,7 +106,7 @@ router.post("/signin",
             res.status(HttpStatusCode.NOT_IMPLEMENTED).send("Need firebase password update")
         }
         else {
-            next();     
+            next();
         }
     },
     passport.authenticate('local', { failureRedirect: "/signin", failureMessage: true }),
@@ -172,6 +178,11 @@ router.post("/signout", (req, res) => {
 })
 
 router.post("/signup", async (req, res) => {
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const userdata = req.body;
     const role = req.body.role;
 
@@ -255,6 +266,10 @@ router.get("/sendVerificationEmail/:email", async (req, res) => {
         },
         raw: true,
     })
+    if (user == null) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No such user exists");
+        return;
+    }
     const sent = await sendVerificationEmail(req.params.email, user.id);
     if (sent) {
         res.status(HttpStatusCode.OK).send("Verification Email Successfully Sent")
@@ -267,6 +282,11 @@ router.get("/sendVerificationEmail/:email", async (req, res) => {
 })
 
 router.post("/updateAuthPassword", async (req, res) => {
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const user = await User.findOne({
         where: {
             email: req.body.email,
@@ -395,6 +415,11 @@ router.post("/verifyUser", async (req, res) => {
         res.status(HttpStatusCode.BAD_REQUEST).send("You are not logged in as this user")
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const currentRole = await Role.findByPk(req.user.role);
     if (currentRole.name != "Admin") {
         res.status(HttpStatusCode.UNAUTHORIZED).send();
@@ -423,6 +448,11 @@ router.post("/declineUser", async (req, res) => {
         res.status(HttpStatusCode.BAD_REQUEST).send("You are not logged in as this user")
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const currentRole = await Role.findByPk(req.user.role);
     if (currentRole.name != "Admin") {
         res.status(HttpStatusCode.UNAUTHORIZED).send();
@@ -465,6 +495,11 @@ router.get("/emailVerify/:userId", async (req, res) => {
 })
 
 router.post("/findPassword/", async (req, res) => {
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const user = await User.findOne({
         where: {
             email: req.body.email,
@@ -508,6 +543,11 @@ router.get("/removeAccount", async (req, res) => {
         res.status(HttpStatusCode.BAD_REQUEST.send("You are not logged in as this user"))
         return;
     }
+    if (checkBodyNull(req)) {
+        res.status(HttpStatusCode.NO_CONTENT).send("No body attached")
+        return;
+    }
+
     const user = await User.findOne({
         where: {
             email: req.body.email,
