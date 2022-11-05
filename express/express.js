@@ -10,7 +10,7 @@ import { default as boardRouter } from './src/board.js'
 import { default as authRouter } from './src/authentication.js'
 import { default as profileRouter } from './src/profile.js'
 import { default as eventRouter } from './src/event.js'
-import { checkBodyNull, s3Client } from './utils/util.js'
+import { checkBodyNull } from './utils/util.js'
 import HttpStatusCode from './utils/httpStatusCode.js';
 import nodemailer from 'nodemailer'
 import fileUpload from 'express-fileupload'
