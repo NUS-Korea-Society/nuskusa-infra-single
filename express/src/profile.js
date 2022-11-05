@@ -10,6 +10,7 @@ import {
 import crypto from 'crypto';
 import { checkBodyNull } from '../utils/util.js'
 import { s3Client } from '../utils/util.js'
+import fs from 'fs'
 
 const router = express.Router()
 

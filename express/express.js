@@ -14,7 +14,7 @@ import { checkBodyNull } from './utils/util.js'
 import HttpStatusCode from './utils/httpStatusCode.js';
 import nodemailer from 'nodemailer'
 import fileUpload from 'express-fileupload'
-import fs from 'fs'
+
 
 const app = express();
 const port = 3000;
