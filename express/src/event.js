@@ -139,7 +139,8 @@ router.post("/uploadAttachment/:postId/:fileName", async (req, res) => {
 
         res.status(HttpStatusCode.OK).send(result);
     }
-    catch {
+    catch(err) {
+        console.log(err)
         res.status(HttpStatusCode.EXPECTATION_FAILED).send("Error has occurred")
     }
 })
