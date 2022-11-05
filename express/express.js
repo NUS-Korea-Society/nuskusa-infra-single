@@ -10,7 +10,7 @@ import { default as boardRouter } from './src/board.js'
 import { default as authRouter } from './src/authentication.js'
 import { default as profileRouter } from './src/profile.js'
 import { default as eventRouter } from './src/event.js'
-import { checkBodyNull, s3Client } from './utils/util.js'
+import { checkBodyNull } from './utils/util.js'
 import HttpStatusCode from './utils/httpStatusCode.js';
 import nodemailer from 'nodemailer'
 import fileUpload from 'express-fileupload'
@@ -88,32 +88,6 @@ app.post("/api/contactus", (req, res) => {
             res.status(HttpStatusCode.OK).send("메세지를 성공적으로 보냈습니다.");
         }
     })
-})
-
-app.post("/api/uploadFile/:ref", async (req, res) => {
-    try {
-        if (!req.files) {
-            res.status(HttpStatusCode.BAD_REQUEST).send("No file attached")
-            return;
-        }
-
-        const filePath = req.files.file.tempFilePath;
-        const blob = fs.readFileSync(filePath);
-        const uploadedFile = await s3Client.upload({
-            Bucket: "nuskusa-storage",
-            Key: req.params.ref,
-            Body: blob,
-        }).promise()
-
-        const result = {
-            url: uploadedFile.Location
-        }
-
-        res.status(HttpStatusCode.OK).send(result);
-    }
-    catch {
-        res.status(HttpStatusCode.EXPECTATION_FAILED).send("Error has occurred")
-    }
 })
 
 app.use("/api/board", boardRouter)

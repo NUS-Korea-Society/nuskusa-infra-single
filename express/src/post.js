@@ -11,6 +11,7 @@ import {
     notifyUpvoteOnPost,
 } from "./notification.js"
 import { checkBodyNull } from '../utils/util.js'
+import { s3Client } from '../utils/util.js'
 
 const router = express.Router();
 
@@ -450,6 +451,36 @@ router.post("/addPost/:boardId", async (req, res) => {
         board: board.id,
     })
     res.status(HttpStatusCode.CREATED).send(newPost.id.toString());
+})
+
+router.post("/uploadPostAttachment/:fileName", async (req, res) => {
+    if (isNotLoggedIn(req)) {
+        res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
+        return;
+    }
+    if (!req.files) {
+        res.status(HttpStatusCode.BAD_REQUEST).send("No file attached")
+        return;
+    }
+    try {
+        const filePath = req.files.file.tempFilePath;
+        const blob = fs.readFileSync(filePath);
+        const key = "images/" + req.params.fileName
+        const uploadedFile = await s3Client.upload({
+            Bucket: "nuskusa-storage",
+            Key: key,
+            Body: blob,
+        }).promise()
+
+        const result = {
+            url: uploadedFile.Location
+        }
+
+        res.status(HttpStatusCode.OK).send(result);
+    }
+    catch {
+        res.status(HttpStatusCode.EXPECTATION_FAILED).send("Error has occurred")
+    }
 })
 
 router.post("/editPost/:postId", async (req, res) => {

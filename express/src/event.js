@@ -3,6 +3,8 @@ import HttpStatusCode from '../utils/httpStatusCode.js';
 import { User, Role, Event, Post, Board, EventRegistration } from '../utils/database/models.js'
 import { isNotLoggedIn } from './authentication.js';
 import { checkBodyNull } from '../utils/util.js'
+import { s3Client } from '../utils/util.js'
+
 
 const router = express.Router()
 
@@ -75,6 +77,11 @@ router.post("/registerEvent", async (req, res) => {
         }
     })
 
+    if (event == null) {
+        res.status(HttpStatusCode.BAD_REQUEST).send("No such event found")
+        return;
+    }
+
     if (!event.canApplyMultiple) {
         const prevRegistration = await EventRegistration.findAll({
             where: {
@@ -93,6 +100,48 @@ router.post("/registerEvent", async (req, res) => {
     })
 
     res.status(HttpStatusCode.OK).send();
+})
+
+router.post("/uploadAttachment/:postId/:fileName", async (req, res) => {
+    if (isNotLoggedIn(req)) {
+        res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
+        return;
+    }
+    if (!req.files) {
+        res.status(HttpStatusCode.BAD_REQUEST).send("No file attached")
+        return;
+    }
+
+    try {
+        const event = await Event.findOne({
+            where: {
+                post: req.body.post,
+            }
+        })
+
+        if (event == null) {
+            res.status(HttpStatusCode.BAD_REQUEST).send("No such event found")
+            return;
+        }
+
+        const filePath = req.files.file.tempFilePath;
+        const blob = fs.readFileSync(filePath);
+        const key = "events/" + event.title + "/" + req.params.fileName
+        const uploadedFile = await s3Client.upload({
+            Bucket: "nuskusa-storage",
+            Key: key,
+            Body: blob,
+        }).promise()
+
+        const result = {
+            url: uploadedFile.Location
+        }
+
+        res.status(HttpStatusCode.OK).send(result);
+    }
+    catch {
+        res.status(HttpStatusCode.EXPECTATION_FAILED).send("Error has occurred")
+    }
 })
 
 router.get('/getEvents', async (req, res) => {
