@@ -9,6 +9,8 @@ import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { checkBodyNull } from '../utils/util.js'
+import { s3Client } from '../utils/util.js'
+
 
 const router = express.Router();
 dotenv.config();

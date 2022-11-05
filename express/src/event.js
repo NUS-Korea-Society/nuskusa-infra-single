@@ -3,6 +3,8 @@ import HttpStatusCode from '../utils/httpStatusCode.js';
 import { User, Role, Event, Post, Board, EventRegistration } from '../utils/database/models.js'
 import { isNotLoggedIn } from './authentication.js';
 import { checkBodyNull } from '../utils/util.js'
+import { s3Client } from '../utils/util.js'
+
 
 const router = express.Router()
 
