@@ -10,7 +10,7 @@ function checkBodyNull(request) {
 }
 
 const REGION = 'ap-southeast-1'
-const CREDENTIALS = AWS.SharedIniFileCredentials({
+const CREDENTIALS = new AWS.SharedIniFileCredentials({
     profile: 'default',
     filename: '/root/.aws/credentials'
 })
