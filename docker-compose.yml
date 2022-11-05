@@ -32,6 +32,8 @@ services:
     depends_on:
       - mysql
     restart: always
+    volumes:
+      - "/home/ubuntu/.aws:/root/.aws"
     environment:
       - PKR_VAR_MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - PKR_VAR_MYSQL_USER=$MYSQL_USER
