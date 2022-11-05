@@ -375,6 +375,33 @@ router.post("/updatePassword", async (req, res) => {
     })
 })
 
+router.post("/uploadVerificationDocument/:fileName", async (req, res) => {
+    if (!req.files) {
+        res.status(HttpStatusCode.BAD_REQUEST).send("No file attached")
+        return;
+    }
+    
+    try {
+        const filePath = req.files.file.tempFilePath;
+        const blob = fs.readFileSync(filePath);
+        const key = "verifications/" + req.params.fileName
+        const uploadedFile = await s3Client.upload({
+            Bucket: "nuskusa-storage",
+            Key: key,
+            Body: blob,
+        }).promise()
+
+        const result = {
+            url: uploadedFile.Location
+        }
+
+        res.status(HttpStatusCode.OK).send(result);
+    }
+    catch {
+        res.status(HttpStatusCode.EXPECTATION_FAILED).send("Error has occurred")
+    }
+})
+
 router.get("/getToVerify", async (req, res) => {
     if (isNotLoggedIn(req)) {
         res.status(HttpStatusCode.BAD_REQUEST).send("You are not logged in as this user")

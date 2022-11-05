@@ -120,6 +120,37 @@ router.post("/editProfile/:prevEmail", async (req, res) => {
     res.status(HttpStatusCode.OK).send();
 })
 
+router.post("/uploadProfileImage/:fileName", async (req, res) => {
+    if (isNotLoggedIn(req)) {
+        res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
+        return;
+    }
+    if (!req.files) {
+        res.status(HttpStatusCode.BAD_REQUEST).send("No file attached")
+        return;
+    }
+
+    try {
+        const filePath = req.files.file.tempFilePath;
+        const blob = fs.readFileSync(filePath);
+        const key = "users/" + req.params.fileName
+        const uploadedFile = await s3Client.upload({
+            Bucket: "nuskusa-storage",
+            Key: key,
+            Body: blob,
+        }).promise()
+
+        const result = {
+            url: uploadedFile.Location
+        }
+
+        res.status(HttpStatusCode.OK).send(result);
+    }
+    catch {
+        res.status(HttpStatusCode.EXPECTATION_FAILED).send("Error has occurred")
+    }
+})
+
 router.delete("/dismissNotification/:notificationId", async (req, res) => {
     if (isNotLoggedIn(req)) {
         res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
