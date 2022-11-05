@@ -13,7 +13,7 @@ router.get("/getBoards", async (req, res) => {
     }
     const currentRole = await Role.findOne({
         where: {
-            id: req.user.role,
+            id: req.user.role,  
         },
         raw: true,
     })
