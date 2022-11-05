@@ -133,13 +133,16 @@ router.post("/uploadProfileImage/:fileName", async (req, res) => {
     }
 
     try {
+        const user = await User.findByPk(req.user.id)
+
         const filePath = req.files.file.tempFilePath;
         const blob = fs.readFileSync(filePath);
-        const key = "users/" + req.params.fileName
+        const key = "users/" + user.id + "_" + req.params.fileName
         const uploadedFile = await s3Client.upload({
             Bucket: "nuskusa-storage",
             Key: key,
             Body: blob,
+            ACL: "public-read"
         }).promise()
 
         const result = {

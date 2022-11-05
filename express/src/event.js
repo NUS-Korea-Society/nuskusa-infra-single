@@ -131,6 +131,7 @@ router.post("/uploadAttachment/:postId/:fileName", async (req, res) => {
             Bucket: "nuskusa-storage",
             Key: key,
             Body: blob,
+            ACL: "public-read"
         }).promise()
 
         const result = {
