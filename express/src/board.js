@@ -69,10 +69,10 @@ router.get("/getBoard/:boardId", async (req, res) => {
         res.status(HttpStatusCode.NO_CONTENT).send("No board with given ID Found")
         return;
     }
-    
+
     const permissionsData = await Permission.findAll({
         where: {
-            board: req.params.boardId,
+            board: board.id,
             role: req.user.id
         }
     })
