@@ -73,7 +73,7 @@ router.get("/getBoard/:boardId", async (req, res) => {
     const permissionsData = await Permission.findAll({
         where: {
             board: board.id,
-            role: req.user.role
+            role: req.user.role,
         }
     })
 
@@ -122,7 +122,7 @@ router.get("/getEditableBoard", async (req, res) => {
     })
     const boardIds = []
     for (let i = 0; i < permissions.length; i++) {
-        boardIds.push(permissions.board)
+        boardIds.push(permissions[i].board)
     }
 
     const boards = await Board.findAll({
