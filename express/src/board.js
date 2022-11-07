@@ -64,13 +64,76 @@ router.get("/getBoard/:boardId", async (req, res) => {
             boardId: req.params.boardId,
         }
     })
+
     if (board == null) {
         res.status(HttpStatusCode.NO_CONTENT).send("No board with given ID Found")
         return;
     }
-    res.status(HttpStatusCode.OK);
-    res.send(board);
+    
+    const permissionsData = await Permission.findAll({
+        where: {
+            board: req.params.boardId,
+            role: req.user.id
+        }
+    })
+
+    const permissions = {
+        "EDIT": false,
+        "COMMENT": false,
+        "VIEW": false,
+    }
+
+    for (let i = 0; i < permissionsData.length; i++) {
+        if (permissionsData[i].type == "EDIT") {
+            permissions.EDIT = true
+        }
+        else if (permissionsData[i].type == "COMMENT") {
+            permissions.COMMENT = true
+        }
+        else if (permissionsData[i].type == "VIEW") {
+            permissions.VIEW = true
+        }
+    }
+
+    if (! permissions.VIEW && ! permissions.EDIT && ! permissions.COMMENT) {
+        res.status(HttpStatusCode.UNAUTHORIZED).send("Not authorized to this board")
+        return;
+    }
+
+    const data = {
+        'permissions': permissions,
+        'data': board
+    }
+
+    res.status(HttpStatusCode.OK).send(data);
     return;
+})
+
+router.get("/getEditableBoard", async (req, res) => {
+    if (isNotLoggedIn(req)) {
+        res.status(HttpStatusCode.UNAUTHORIZED).send("Not Logged In")
+        return;
+    }
+    const permissions = await Permission.findAll({
+        where: {
+            role: req.user.role,
+            type: "EDIT"
+        }
+    })
+    const boardIds = []
+    for (let i = 0; i < permissions.length; i++) {
+        boardIds.push(permissions.board)
+    }
+
+    const boards = await Board.findAll({
+        where: {
+            id: {
+                [Op.or]: boardIds,
+            }
+        },
+        raw: true,
+    })
+    res.status(HttpStatusCode.OK).send(boards)
 })
 
 router.get("/getPosts/:boardId", async (req, res) => {
