@@ -70,15 +70,12 @@ router.get("/getBoard/:boardId", async (req, res) => {
         return;
     }
 
-    console.log(req.user.id)
-    console.log(board.id)
     const permissionsData = await Permission.findAll({
         where: {
             board: board.id,
-            role: req.user.id
+            role: req.user.role
         }
     })
-    console.log(permissionsData)
 
     const permissions = {
         "EDIT": false,
