@@ -18,7 +18,8 @@ async function synchronize() {
     try {
         console.log("synchronizing...")
         await dbService.sync({
-            force: false
+            force: false,
+            alter: true,
         });
         await initializeDB();
         console.log("All models were synchronized successfully.");
