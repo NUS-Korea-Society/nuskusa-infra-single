@@ -14,7 +14,7 @@ import { checkBodyNull } from './utils/util.js'
 import HttpStatusCode from './utils/httpStatusCode.js';
 import nodemailer from 'nodemailer'
 import fileUpload from 'express-fileupload'
-
+import { setTimer } from './utils/instagram.js'
 
 const app = express();
 const port = 3000;
@@ -99,6 +99,8 @@ app.use("/api/auth", authRouter)
 app.use("/api/profile", profileRouter)
 
 app.use("/api/event", eventRouter)
+
+setTimer()
 
 app.listen(port, () => {
     console.log(`NUSKUSA Web Server Listening on Port ${port}`)

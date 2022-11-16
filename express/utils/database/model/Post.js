@@ -59,6 +59,15 @@ Post.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
     },
+    isInstaPost: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    instaPostId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    }
 }, {
     sequelize: dbService,
     modelName: "Post"
