@@ -14,11 +14,9 @@ class instagramPost {
 }
 
 const access_token = process.env.INSTA_ACCESS_TOKEN
-    //"IGQVJWRzdMNmtaZA2gtencyZAkh5MHJEU1J0UTlGYkNfM1ZATMVV0ODR3YVBhRjJzOWFFbFhNRDk5R295Vm1LRllpVEo5SzFYeDFzdV90YldhUkE2ZAWtHNXlKc2hlZAnZA4NElNendZAcHRXUzRLUjhaN0E0LQZDZD";
-
 
 async function setTimer() {
-    const cronString = "49 16 * * *"
+    const cronString = "0 0 * * *"
 
     const admin = await Role.findOne({
         where: {
@@ -56,7 +54,7 @@ async function setTimer() {
         for (let i = 0; i < recentPostIds.length; i++) {
             const index = alreadyInPosts.indexOf(recentPostIds[i])
             if (index < 0) {
-                newPostIds.push(recentPostIds[index])
+                newPostIds.push(recentPostIds[i])
             }
         }
         const postDatas = []
@@ -146,11 +144,10 @@ async function getPost(postId) {
             const type = jsonFile.media_type;
             let imgURL;
             if (type == "CAROUSEL_ALBUM") {
-                imgURL = await getMultipleImg(postId);
+                imgURL = processImages(await getMultipleImg(postId));
             } else {
-                imgURL = [jsonFile.media_url];
+                imgURL = processImages([jsonFile.media_url]);
             }
-            imgURL = processImages(imgURL)
             const caption = jsonFile.caption;
             const result = caption.split(/\r?\n/);
             const title = result[0];
