@@ -73,6 +73,8 @@ async function setTimer() {
                 isHidden: false,
                 isPinned: false,
                 isEvent: false,
+                isInstaPost: true,
+                instaPostId: post.postId,
                 author: adminUser.id,
                 board: announcementBoard.id,
             })
