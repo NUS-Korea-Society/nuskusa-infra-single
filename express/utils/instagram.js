@@ -17,7 +17,7 @@ const access_token = process.env.INSTA_ACCESS_TOKEN
 
 
 async function setTimer() {
-    const cronString = "0 0 0 * *"
+    const cronString = "0 0 * * *"
 
     const admin = await Role.findOne({
         where: {
