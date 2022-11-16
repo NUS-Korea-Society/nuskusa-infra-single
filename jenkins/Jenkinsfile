@@ -28,6 +28,9 @@ pipeline {
                     withCredentials([string(credentialsId: 'nuskusa-gmail-app-pw', variable: 'EMAIL_PASSWORD')]) {
                         sh 'echo "EMAIL_PASSWORD=${EMAIL_PASSWORD}" > express/.env'
                     }
+                    withCredentials([string(credentialsId: 'nuskusa-insta-access-token', variable: 'INSTA_ACCESS_TOKEN')]) {
+                        sh 'echo "INSTA_ACCESS_TOKEN=${INSTA_ACCESS_TOKEN}" >> express/.env'
+                    }
                 }
             }
         }

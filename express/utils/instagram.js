@@ -1,6 +1,7 @@
 import { Board, Post, Role, User } from './database/models.js'
 import { Op, Sequelize } from 'sequelize'
 import cron from 'node-cron'
+import fetch from 'node-fetch'
 
 class instagramPost {
     constructor(postId, type, imgURL, title, content) {
