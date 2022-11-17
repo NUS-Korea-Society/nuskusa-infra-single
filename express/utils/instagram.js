@@ -2,11 +2,13 @@ import { Board, Post, Role, User } from './database/models.js'
 import { Op, Sequelize } from 'sequelize'
 import cron from 'node-cron'
 import fetch from 'node-fetch'
+import dotenv from "dotenv"
+
+dotenv.config("../.env")
 
 class instagramPost {
-    constructor(postId, type, imgURL, title, content) {
+    constructor(postId, imgURL, title, content) {
         this.postId = postId;
-        this.type = type;
         this.imgURL = imgURL;
         this.title = title;
         this.content = content;
@@ -207,7 +209,7 @@ async function getMultipleImg(postId) {
 }
 //<img src="https://nuskusa-storage.s3.ap-southeast-1.amazonaws.com/images/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202022-11-11%2002-01-26.png"></figure>
 function processImages(images) {
-    const finalString = ""
+    let finalString = ""
     const figureStart = `<figure class="image"></figure>`
     const figureEnd = "</figure>"
     for (let i = 0; i < images.length; i++) {
