@@ -165,14 +165,23 @@ router.get("/getPosts/:boardId", async (req, res) => {
             ['id', 'DESC']
         ]
     })
+    const pinned = []
+    const unpinned = []
     for (let i = 0; i < posts.length; i++) {
         if (posts[i].isEvent) {
             const event = await Event.findByPk(posts[i].content)
             const tempContent = JSON.parse(event.content)
             posts[i].content = tempContent.description
         }
+        if (posts[i].isPinned) {
+            pinned.push(posts[i])
+        }
+        else {
+            unpinned.push(posts[i])
+        }
     }
-    res.status(HttpStatusCode.OK).send(posts);
+    const result = pinned.concat(unpinned)
+    res.status(HttpStatusCode.OK).send(result);
     return;
 })
 

@@ -219,7 +219,7 @@ function processImages(images) {
 }
 
 function createImageTag(src) {
-    return `<img src="` + src + `">`
+    return `<img src="` + src + `" style="width:100%">`
 }
 
 export { setTimer }
