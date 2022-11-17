@@ -160,7 +160,10 @@ router.get("/getPosts/:boardId", async (req, res) => {
                 [Sequelize.literal(`(SELECT email FROM Users as User WHERE User.id = Post.author)`), "email"]
             ],
             exclude: ["author"]
-        }
+        },
+        order: [
+            ['id', 'DESC']
+        ]
     })
     for (let i = 0; i < posts.length; i++) {
         if (posts[i].isEvent) {
@@ -201,7 +204,7 @@ router.get("/getAnnouncements", async (req, res) => {
         limit: length,
         raw: true,
     })
-    res.status(HttpStatusCode.OK).send(announcements)
+    res.status(HttpStatusCode.OK).send(pinnedAnnouncements.concat(announcements))
 })
 
 export default router;
