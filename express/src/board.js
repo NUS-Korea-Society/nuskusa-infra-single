@@ -180,10 +180,25 @@ router.get("/getAnnouncements", async (req, res) => {
         },
         attributes: ['id']
     })
+    const pinnedAnnouncements = await Post.findAll({
+        where: {
+            board: announcementBoard.id,
+            isHidden: false,
+            isPinned: true,
+        },
+        raw: true
+    })
+    const length = pinnedAnnouncements.length > 10 ? 0 : 10 - pinnedAnnouncements.length
     const announcements = await Post.findAll({
         where: {
-            board: announcementBoard.id
+            board: announcementBoard.id,
+            isHidden: false,
+            isPinned: false,
         },
+        order: [
+            ['id', 'DESC']
+        ],
+        limit: length,
         raw: true,
     })
     res.status(HttpStatusCode.OK).send(announcements)
