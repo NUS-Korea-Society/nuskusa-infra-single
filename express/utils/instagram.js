@@ -53,8 +53,12 @@ async function setTimer() {
             raw: true
         })
         const newPostIds = []
+        const alreadyInPostIds = []
+        for (let i = 0; i < alreadyInPosts.length; i++) {
+            newPostIds.push(alreadyInPosts[i].id);
+        }
         for (let i = 0; i < recentPostIds.length; i++) {
-            const index = alreadyInPosts.indexOf(recentPostIds[i])
+            const index = alreadyInPostIds.indexOf(recentPostIds[i])
             if (index < 0) {
                 newPostIds.push(recentPostIds[i])
             }
